@@ -1,15 +1,43 @@
-div {
-    position: absolute;
+#chatbox {
+    margin: 0 auto;
+    max-width: 800px;
+    padding: 0 20px;
 }
 
-input {
-    width: 400px;
+#conversation {
+    height: 500px;
+    overflow-y: auto;
 }
 
-button {
-    width: 50px;
+.container {
+    border: 2px solid #000;
+    background-color: #CEECF5;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
 }
 
-textarea {
+.darker {
+    border-color: #000;
+    background-color: #81BEF7;
+}
+
+.container::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.container img {
+    float: left;
+    max-width: 60px;
     width: 100%;
+    margin-right: 20px;
+    border-radius: 50%;
+}
+
+.container img.right {
+    float: right;
+    margin-left: 20px;
+    margin-right:0;
 }

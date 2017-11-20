@@ -1,16 +1,33 @@
 var baseUrl = "https://api.api.ai/v1/";
+
 $(document).ready(function() {
     $("#input").keypress(function(event) {
         if (event.which == 13) {
+        	
+        	var userMessage = $("#input").val();
+
+            setUserMessage(userMessage);
+            send(userMessage);
+            
             event.preventDefault();
-            send($("#input").val());
         }
 	});
 });
 
-function setInput(text) {
-	$("#input").val(text);
-	send($("#input").val());
+function setUserMessage(text){
+	$("#conversation").append("<div class='container'>\
+		<img src='' alt='User' style='width:100%;'>\
+		<p>" + text + "</p>\
+		</div>");
+    
+    $("#input").val("");
+}
+
+function setBotMessage(text) {
+	$("#conversation").append("<div class='container darker'>\
+		<img src='' alt='Avatar' class='right' style='width:100%;'>\
+		<p>" + text + "</p>\
+		</div>");
 }
 
 function send(text) {
@@ -25,16 +42,13 @@ function send(text) {
 
 		data: JSON.stringify({ query: text, lang: "en", sessionId: "somerandomthing" }),
 		success: function(data) {
-			setResponse(JSON.stringify(data, undefined, 2));
+			console.log(data)
+			setBotMessage(data.result.fulfillment.messages[0].speech);
+			$("#conversation").animate({ scrollTop: $('#conversation')[0].scrollHeight}, 0);
 		},
-		error: function() {
-			setResponse("Internal Server Error");
+		
+		error: function(error) {
+			console.log(error);
 		}
 	});
-	
-	setResponse("Loading...");
-}
-
-function setResponse(val) {
-	$("#response").text(val);
 }
