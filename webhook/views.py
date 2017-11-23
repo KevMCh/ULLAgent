@@ -8,6 +8,9 @@ CONNECTION_ERROR = 'Lo siento, hemos tenido problemas al solicitar '
 
 WORPRESS_API = 'wp-json/wp/v2/'
 
+CALL = 'https://www.ull.es/portal/convocatorias/'
+CALL_API = CALL + WORPRESS_API + 'convocatorias'
+
 NEWS = 'https://www.ull.es/portal/noticias/'
 NEWS_API = NEWS + WORPRESS_API + 'posts'
 
@@ -16,6 +19,7 @@ TOTAL_PAGE = 2
 def getData(action, request):
     return {
         'showNews': showNews(request),
+        'showCalls': showCalls(request),
     }[action]
     
 def createList(values):
@@ -59,6 +63,45 @@ def showNews(request):
         
     else: 
         error = CONNECTION_ERROR + ' las noticias.'
+        response_data['speech'] =  error
+        response_data['displayText'] = error
+    
+    return response_data
+    
+def showCalls(request):
+    INTRO = "Estas son las convocatorias disponibles:<br>"
+    
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    
+    contexts = body['result']['contexts'][0]
+    
+    page = TOTAL_PAGE - contexts['lifespan']
+    number = contexts['parameters']['number']
+
+    response_data = {}
+    params = "?page=" + str(page)
+    if(str(number).isdigit()):
+        params += "&per_page=" + str(number)
+    
+    url = CALL_API + params
+    
+    print url
+    
+    response = requests.get(url)
+    
+    if response.status_code == requests.codes.ok:
+        results = response.json()
+
+        titleCalls = createList(results)
+        
+        responseText = INTRO + titleCalls + 'Quieres mostrar las siguientes convocatorias?'
+            
+        response_data['speech'] = responseText
+        response_data['displayText'] = responseText
+        
+    else: 
+        error = CONNECTION_ERROR + ' las convocatorias.'
         response_data['speech'] =  error
         response_data['displayText'] = error
     
