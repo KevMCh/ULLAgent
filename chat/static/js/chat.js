@@ -21,6 +21,7 @@ function setUserMessage(text){
 		</div>");
     
     $("#input").val("");
+    $("#conversation").animate({ scrollTop: $('#conversation')[0].scrollHeight}, 0);
 }
 
 function setBotMessage(text) {
@@ -28,6 +29,8 @@ function setBotMessage(text) {
 		<img src='' alt='Avatar' class='right' style='width:100%;'>\
 		<p>" + text + "</p>\
 		</div>");
+		
+	$("#conversation").animate({ scrollTop: $('#conversation')[0].scrollHeight}, 0);
 }
 
 function send(text) {
@@ -44,7 +47,6 @@ function send(text) {
 		success: function(data) {
 			console.log(data)
 			setBotMessage(data.result.fulfillment.messages[0].speech);
-			$("#conversation").animate({ scrollTop: $('#conversation')[0].scrollHeight}, 0);
 		},
 		
 		error: function(error) {
