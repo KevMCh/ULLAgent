@@ -6,13 +6,14 @@ from django.shortcuts import redirect
 
 CONNECTION_ERROR = 'Lo siento, hemos tenido problemas al solicitar '
 
-WORPRESS_API = 'wp-json/wp/v2/'
+WORDPRESS_API = 'wp-json/wp/v2/'
+POSTS = 'posts'
 
 CALL = 'https://www.ull.es/portal/convocatorias/'
-CALL_API = CALL + WORPRESS_API + 'convocatorias'
+CALL_API = CALL + WORDPRESS_API + 'convocatorias'
 
 NEWS = 'https://www.ull.es/portal/noticias/'
-NEWS_API = NEWS + WORPRESS_API + 'posts'
+NEWS_API = NEWS + WORDPRESS_API + POSTS
 
 TOTAL_PAGE = 2
 
@@ -30,19 +31,32 @@ def createList(values):
     listText += "</ul>"
     
     return listText
-
+    
+def createResponseData(data):
+    responseData = {
+        'speech': data,
+        'displayText': data,
+    }
+    return responseData
+    
+def bodyToJSON(requestBody):
+    bodyUnicode = requestBody.decode('utf-8')
+    
+    return json.loads(bodyUnicode)
+    
+def getBodyContext(body):
+    return body['result']['contexts'][0]
+    
 def showNews(request):
     INTRO = "Estas son las noticias disponibles:<br>"
     
-    body_unicode = request.body.decode('utf-8')
-    body = json.loads(body_unicode)
-    
-    contexts = body['result']['contexts'][0]
+    body = bodyToJSON(request.body)
+    contexts = getBodyContext(body)
     
     page = TOTAL_PAGE - contexts['lifespan']
     number = contexts['parameters']['number']
 
-    response_data = {}
+    
     params = "?page=" + str(page)
     if(str(number).isdigit()):
         params += "&per_page=" + str(number)
@@ -58,36 +72,24 @@ def showNews(request):
         
         responseText = INTRO + titleNews + 'Quieres mostrar las siguientes noticias?'
             
-        response_data['speech'] = responseText
-        response_data['displayText'] = responseText
-        
-    else: 
-        error = CONNECTION_ERROR + ' las noticias.'
-        response_data['speech'] =  error
-        response_data['displayText'] = error
+        return createResponseData(responseText)
     
-    return response_data
-    
+    return createResponseData(CONNECTION_ERROR + ' las noticias.')
+
 def showCalls(request):
     INTRO = "Estas son las convocatorias disponibles:<br>"
     
-    body_unicode = request.body.decode('utf-8')
-    body = json.loads(body_unicode)
-    
-    contexts = body['result']['contexts'][0]
+    body = bodyToJSON(request.body)
+    contexts = getBodyContext(body)
     
     page = TOTAL_PAGE - contexts['lifespan']
     number = contexts['parameters']['number']
 
-    response_data = {}
     params = "?page=" + str(page)
     if(str(number).isdigit()):
         params += "&per_page=" + str(number)
     
     url = CALL_API + params
-    
-    print url
-    
     response = requests.get(url)
     
     if response.status_code == requests.codes.ok:
@@ -97,15 +99,9 @@ def showCalls(request):
         
         responseText = INTRO + titleCalls + 'Quieres mostrar las siguientes convocatorias?'
             
-        response_data['speech'] = responseText
-        response_data['displayText'] = responseText
+        return createResponseData(responseText)
         
-    else: 
-        error = CONNECTION_ERROR + ' las convocatorias.'
-        response_data['speech'] =  error
-        response_data['displayText'] = error
-    
-    return response_data
+    return createResponseData(CONNECTION_ERROR + ' las convocatorias.')
 
 def index(request):
     return HttpResponse("Webhook to NewsAgent.")
