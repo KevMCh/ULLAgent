@@ -3,7 +3,6 @@ var baseUrl = "https://api.api.ai/v1/";
 $(document).ready(function() {
     $("#input").keypress(function(event) {
         if (event.which == 13) {
-        	
         	var userMessage = $("#input").val();
 
             setUserMessage(userMessage);
@@ -12,24 +11,36 @@ $(document).ready(function() {
             event.preventDefault();
         }
 	});
+	
+	$('#buttonBot').click(function() {
+		$(this).hide();
+		$('#chatbox').show();
+	});
+	
+	$('#minimize').click(function() {
+		$('#chatbox').hide();
+		$('#buttonBot').show();
+	});
 });
 
 function setUserMessage(text){
-	$("#conversation").append("<div class='container'>\
-		<img src='' alt='User' style='width:100%;'>\
-		<p>" + text + "</p>\
-		</div>");
-    
+	$("#conversation").append("<div class='sended-message message-own'>\
+		<div class='content'>" +
+			text +
+		"</div>\
+	</div>");
+	
     $("#input").val("");
     $("#conversation").animate({ scrollTop: $('#conversation')[0].scrollHeight}, 0);
 }
 
 function setBotMessage(text) {
-	$("#conversation").append("<div class='container darker'>\
-		<img src='' alt='Avatar' class='right' style='width:100%;'>\
-		<p>" + text + "</p>\
-		</div>");
-		
+	$("#conversation").append("<div class='sended-message message-bot'>\
+		<div class='content'>" + 
+			text +
+		"</div>\
+	</div>");
+
 	$("#conversation").animate({ scrollTop: $('#conversation')[0].scrollHeight}, 0);
 }
 

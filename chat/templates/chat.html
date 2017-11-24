@@ -5,7 +5,14 @@
 <script src="{% static 'js/access-token-agent.js' %}"></script>
 <script src="{% static 'js/chat.js' %}"></script>
 
-<div id="chatbox">
-    <div id="conversation"></div>
-    <input class="container" id="input" type="text">
+<a id='buttonBot' class="bot-position"><img src="{% static 'img/bot.png' %}"></img></a>
+
+<div id="chatbox" class="bot-position" hidden>
+    <div id="minimize" class="header">
+        ULLBot
+	</div>
+	<div id="conversation"></div>
+    <div id="message">
+    	<input class="container" id="input" type="text" placeholder="Escribir mensaje...">
+    </div>
 </div>
