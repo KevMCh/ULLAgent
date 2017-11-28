@@ -21,11 +21,13 @@ $(document).ready(function() {
 		$('#chatbox').hide();
 		$('#buttonBot').show();
 	});
+	
+	send("Hola");
 });
 
 function setUserMessage(text){
 	$("#conversation").append("<div class='sended-message message-own'>\
-		<div class='content'>" +
+		<div align=left class='content'>" +
 			text +
 		"</div>\
 	</div>");
@@ -36,7 +38,7 @@ function setUserMessage(text){
 
 function setBotMessage(text) {
 	$("#conversation").append("<div class='sended-message message-bot'>\
-		<div class='content'>" + 
+		<div align=left class='content'>" + 
 			text +
 		"</div>\
 	</div>");
@@ -57,7 +59,12 @@ function send(text) {
 		data: JSON.stringify({ query: text, lang: "en", sessionId: "somerandomthing" }),
 		success: function(data) {
 			console.log(data)
-			setBotMessage(data.result.fulfillment.messages[0].speech);
+			
+			var splitData = data.result.fulfillment.messages[0].speech;
+			var res = splitData.split("<br>");
+			for (i = 0; i < res.length; i++) {
+    			setBotMessage(res[i]);
+			}
 		},
 		
 		error: function(error) {
