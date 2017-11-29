@@ -4,9 +4,7 @@ $(document).ready(function() {
     $("#input").keypress(function(event) {
         if (event.which == 13) {
         	var userMessage = $("#input").val();
-
-            setUserMessage(userMessage);
-            send(userMessage);
+			sendUserMessage(userMessage);
             
             event.preventDefault();
         }
@@ -25,7 +23,12 @@ $(document).ready(function() {
 	send("Hola");
 });
 
-function setUserMessage(text){
+function sendUserMessage(text) {
+	setUserMessage(text);
+	send(text);
+}
+
+function setUserMessage(text) {
 	$("#conversation").append("<div class='sended-message message-own'>\
 		<div align=left class='content'>" +
 			text +
