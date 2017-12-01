@@ -1,5 +1,6 @@
 import json, ast
 import requests
+import time
 
 from django.http import HttpResponse
 from django.shortcuts import redirect
@@ -131,6 +132,9 @@ def showEvents(request):
     dateStart = contexts['parameters']['dateStart']
     dateEnd = contexts['parameters']['dateEnd']
     
+    if(dateStart == ""):
+        dateStart = time.strftime("%Y-%m-%d")
+
     url = EVENTS_API + category + '/' + dateStart + '/'
     
     if (dateEnd != ""):
