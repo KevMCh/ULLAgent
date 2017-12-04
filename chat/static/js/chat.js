@@ -62,11 +62,10 @@ function send(text) {
 		data: JSON.stringify({ query: text, lang: "en", sessionId: "somerandomthing" }),
 		success: function(data) {
 			console.log(data)
-			
-			var splitData = data.result.fulfillment.messages[0].speech;
-			var res = splitData.split("<br>");
-			for (i = 0; i < res.length; i++) {
-    			setBotMessage(res[i]);
+
+			var messages = data.result.fulfillment.messages;
+			for (i = 0; i < messages.length; i++) {
+    			setBotMessage(messages[i].speech);
 			}
 		},
 		
